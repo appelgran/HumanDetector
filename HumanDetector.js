@@ -19,7 +19,33 @@ function HumanDetector(options) {
 			this._broadcast();
 		}
 	}
+	
+	//
+	// these event handlers requires the _this variable (their this will be document)
+	
+	var _this = this;
+	
+	this._mouseDetected = function() {
+		_this.hasDetected.mouse = true;
+		_this._newDetection();
+		_this._removeEventListener(document, "mousemove", _this._mouseDetected);
+	};
 
+	this._keyboardDetected = function() {
+		_this.hasDetected.keyboard = true;
+		_this._newDetection();
+		_this._removeEventListener(document, "keydown", _this._keyboardDetected);
+	};
+
+	this._touchDetected = function() {
+		_this.hasDetected.touch = true;
+		_this._newDetection();
+		_this._removeEventListener(document, "touchmove", _this._touchDetected);
+		_this._removeEventListener(document, "touchstart", _this._touchDetected);
+	};
+	
+	//
+	
 	this._start();
 }
 
@@ -63,25 +89,6 @@ HumanDetector.prototype._start = function() {
 		this._addEventListener(document, "touchmove", this._touchDetected);
 		this._addEventListener(document, "touchstart", this._touchDetected);
 	}
-};
-
-HumanDetector.prototype._mouseDetected = function() {
-	this.hasDetected.mouse = true;
-	this._newDetection();
-	this._removeEventListener(document, "mousemove", this._mouseDetected);
-};
-
-HumanDetector.prototype._keyboardDetected = function() {
-	this.hasDetected.keyboard = true;
-	this._newDetection();
-	this._removeEventListener(document, "keydown", this._keyboardDetected);
-};
-
-HumanDetector.prototype._touchDetected = function() {
-	this.hasDetected.touch = true;
-	this._newDetection();
-	this._removeEventListener(document, "touchmove", this._touchDetected);
-	this._removeEventListener(document, "touchstart", this._touchDetected);
 };
 	
 HumanDetector.prototype._addEventListener = function(element, event, handler) {
